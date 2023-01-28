@@ -22,7 +22,7 @@ class Appointments extends Component {
 
     if (starFilterActive) {
       return appointmentsList.filter(
-        eachAptItem => eachAptItem.isStarred === true,
+        eachAptItem => eachAptItem.isStarredItem === true,
       )
     }
     return appointmentsList
@@ -32,7 +32,10 @@ class Appointments extends Component {
     this.setState(prevState => ({
       appointmentsList: prevState.appointmentsList.map(eachAptItem => {
         if (id === eachAptItem.id) {
-          return {...eachAptItem, isStarred: !eachAptItem.isStarred}
+          return {
+            ...eachAptItem,
+            starFilterActive: !eachAptItem.starFilterActive,
+          }
         }
         return eachAptItem
       }),
@@ -49,12 +52,12 @@ class Appointments extends Component {
 
   onAddAppointment = event => {
     event.preventDefault()
-    const {titleName, date, appointmentsList} = this.state
+    const {titleName, date} = this.state
     const newAppointment = {
       id: uuidv4(),
       titleName,
       date,
-      isStarred: false,
+      starFilterActive: false,
     }
     this.setState(prevState => ({
       appointmentsList: [...prevState.appointmentsList, newAppointment],
@@ -65,8 +68,6 @@ class Appointments extends Component {
 
   render() {
     const {titleName, date, appointmentsList} = this.state
-    const {isStarred} = appointmentsList
-    const finalResults = this.getStarAppointments()
     return (
       <div className="app-container">
         <div className="appointment-container">
@@ -118,7 +119,7 @@ class Appointments extends Component {
             </button>
           </div>
           <ul className="appointments-list-container">
-            {finalResults.map(eachAptItem => (
+            {appointmentsList.map(eachAptItem => (
               <AppointmentItem
                 key={eachAptItem.id}
                 appointmentDetails={eachAptItem}
